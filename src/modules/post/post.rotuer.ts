@@ -4,7 +4,6 @@ const router = express.Router();
 
 router.post("/", async (req, res) => { 
 postController.createPost
-
 });
 
 export const postRouter: Router = router;

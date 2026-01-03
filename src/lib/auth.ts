@@ -45,16 +45,81 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
-        console.log(user, url, token);
       const info = await transporter.sendMail({
         from: '"Prismablog" <prisma@fhaim.com>',
-        to: "mazumderhabib654@gmail.com",
-        subject: "Hello ✔",
-        text: `Hello world? please verify now ${url}`, // Plain-text version of the message
-        html: "<b>Hello world?</b>", // HTML version of the message
+        to: user.email,
+        subject: "Verify your email address – Prismablog",
+        text: `Hello ${user.name || "there"},
+      
+Thanks for signing up for Prismablog.
+Please verify your email by clicking the link below:
+
+${url}
+
+If you didn’t create this account, you can safely ignore this email.`,
+        html: `
+      <div style="background-color:#f4f6f8;padding:30px;font-family:Arial,sans-serif;">
+        <table width="100%" max-width="600" align="center" cellpadding="0" cellspacing="0" 
+          style="background:#ffffff;border-radius:8px;padding:30px;">
+          
+          <tr>
+            <td style="text-align:center;padding-bottom:20px;">
+              <h1 style="margin:0;color:#4f46e5;">Prismablog</h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="color:#333;font-size:16px;line-height:1.6;">
+              <p>Hi ${user.name || "there"},</p>
+
+              <p>
+                Thanks for signing up for <strong>Prismablog</strong>!  
+                Please confirm your email address by clicking the button below.
+              </p>
+
+              <div style="text-align:center;margin:30px 0;">
+                <a href="${url}"
+                  style="
+                    background:#4f46e5;
+                    color:#ffffff;
+                    text-decoration:none;
+                    padding:14px 28px;
+                    border-radius:6px;
+                    font-weight:bold;
+                    display:inline-block;
+                  ">
+                  Verify Email
+                </a>
+              </div>
+
+              <p style="font-size:14px;color:#666;">
+                Or copy and paste this link into your browser:
+              </p>
+
+              <p style="font-size:14px;word-break:break-all;color:#4f46e5;">
+                ${url}
+              </p>
+
+              <p style="margin-top:30px;font-size:14px;color:#666;">
+                If you didn’t create an account, you can safely ignore this email.
+              </p>
+
+              <p style="margin-top:20px;">
+                — The Prismablog Team
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <p style="text-align:center;font-size:12px;color:#999;margin-top:20px;">
+          © ${new Date().getFullYear()} Prismablog. All rights reserved.
+        </p>
+      </div>
+      `,
       });
 
-      console.log("Message sent:", info.messageId);
+      console.log("Verification email sent:", info.messageId);
     },
   },
 });
