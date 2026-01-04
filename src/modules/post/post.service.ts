@@ -16,6 +16,13 @@ const createPost = async (data: any, userId: string) => {
   return result;
 };
 
+
+// get all post 
+const getALlPost = async() => {
+  const allPost = await prisma.post.findMany();
+  return allPost;
+}
 export const postService = {
   createPost,
+  getALlPost
 };
