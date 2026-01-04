@@ -1,3 +1,4 @@
+import { serialize } from "node:v8";
 import { prisma } from "../../lib/prisma";
 
 // post.service.ts
@@ -16,13 +17,34 @@ const createPost = async (data: any, userId: string) => {
   return result;
 };
 
-
-// get all post 
-const getALlPost = async() => {
-  const allPost = await prisma.post.findMany();
+// get all post
+const getALlPost = async (payload: { search: string | undefined }) => {
+  const allPost = await prisma.post.findMany({
+    where: {
+      OR: [
+        {
+          title: {
+            contains: payload.search as string,
+            mode: "insensitive",
+          },
+        },
+        {
+          content: {
+            contains: payload.search as string,
+            mode: "insensitive",
+          },
+        },
+        {
+          tags: {
+            has: payload.search as string,
+          },
+        },
+      ],
+    },
+  });
   return allPost;
-}
+};
 export const postService = {
   createPost,
-  getALlPost
+  getALlPost,
 };
