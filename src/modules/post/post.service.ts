@@ -21,12 +21,14 @@ const createPost = async (data: any, userId: string) => {
 const getALlPost = async ({
   search,
   tags,
+  isFeature,
 }: {
   search: string | undefined;
   tags: string[] | [];
+  isFeature: boolean | undefined;
 }) => {
   const andConditons: PostWhereInput[] = [];
-
+  console.log(typeof isFeature, isFeature);
   if (search) {
     andConditons.push({
       OR: [
@@ -57,6 +59,12 @@ const getALlPost = async ({
         hasEvery: tags as string[],
       },
     });
+  }
+
+  if(typeof isFeature === "boolean"){
+    andConditons.push({
+      isFeature
+    })
   }
   const allPost = await prisma.post.findMany({
     where: {
