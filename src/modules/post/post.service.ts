@@ -1,6 +1,7 @@
 import { serialize } from "node:v8";
 import { prisma } from "../../lib/prisma";
 import { PostWhereInput } from "../../../generated/prisma/models";
+import { PostStatus } from "../../../generated/prisma/enums";
 
 // post.service.ts
 const createPost = async (data: any, userId: string) => {
@@ -22,10 +23,12 @@ const getALlPost = async ({
   search,
   tags,
   isFeature,
+  status
 }: {
   search: string | undefined;
   tags: string[] | [];
   isFeature: boolean | undefined;
+  status : PostStatus | undefined
 }) => {
   const andConditons: PostWhereInput[] = [];
   console.log(typeof isFeature, isFeature);
@@ -64,6 +67,12 @@ const getALlPost = async ({
   if(typeof isFeature === "boolean"){
     andConditons.push({
       isFeature
+    })
+  }
+
+  if(status){
+    andConditons.push({
+      status
     })
   }
   const allPost = await prisma.post.findMany({
