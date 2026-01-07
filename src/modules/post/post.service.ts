@@ -1,4 +1,3 @@
-import { serialize } from "node:v8";
 import { prisma } from "../../lib/prisma";
 import { PostWhereInput } from "../../../generated/prisma/models";
 import { PostStatus } from "../../../generated/prisma/enums";
@@ -23,12 +22,22 @@ const getALlPost = async ({
   search,
   tags,
   isFeature,
-  status
+  status,
+  page, 
+  limit,
+  skip,
+  sortBy,
+  sortOrder
 }: {
   search: string | undefined;
   tags: string[] | [];
   isFeature: boolean | undefined;
-  status : PostStatus | undefined
+  status : PostStatus | undefined;
+  page : number,
+  limit : number,
+  skip : number,
+  sortBy : string | undefined,
+  sortOrder : string | undefined
 }) => {
   const andConditons: PostWhereInput[] = [];
   console.log(typeof isFeature, isFeature);
@@ -76,9 +85,14 @@ const getALlPost = async ({
     })
   }
   const allPost = await prisma.post.findMany({
+    take : limit,
+    skip,
     where: {
       AND: andConditons,
     },
+    orderBy : sortBy && sortOrder ? {
+      [sortBy] : sortOrder
+    } : {createdAt : "desc"}
   });
   return allPost;
 };
