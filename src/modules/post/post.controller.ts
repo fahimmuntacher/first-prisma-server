@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { postService } from "./post.service";
 import { PostStatus } from "../../../generated/prisma/enums";
 import { paginationsSortingHelper } from "../../helpers/paginationsSortingHelper";
+import { error } from "node:console";
 
 const createPost = async (req: Request, res: Response) => {
   try {
@@ -67,7 +68,25 @@ const getAllPost = async (req: Request, res: Response) => {
   }
 };
 
+const getPostById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    if(!id){
+      throw new Error("Post id is required")
+    }
+    const result = await postService.getPostById(id);
+    res.status(200).json(result);
+  } catch (e: any) {
+    res.status(400).json({
+      error: "Get Post ID not get",
+      details: e.message,
+    });
+  }
+};
+
 export const PostController = {
   createPost,
   getAllPost,
+  getPostById,
 };

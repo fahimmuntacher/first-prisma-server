@@ -5,6 +5,7 @@ const router = express.Router();
 
 // get method
 router.get("/", PostController.getAllPost)
+router.get("/:id", PostController.getPostById)
 
 
 // post method
