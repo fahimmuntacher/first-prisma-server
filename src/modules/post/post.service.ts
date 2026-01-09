@@ -1,6 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { PostWhereInput } from "../../../generated/prisma/models";
-import { PostStatus } from "../../../generated/prisma/enums";
+import { CommentStatus, PostStatus } from "../../../generated/prisma/enums";
 
 // post.service.ts
 const createPost = async (data: any, userId: string) => {
@@ -91,6 +91,11 @@ const getALlPost = async ({
     where: {
       AND: andConditons,
     },
+    include: {
+      _count: {
+        select: { comments: true },
+      },
+    },
     orderBy:
       sortBy && sortOrder
         ? {
@@ -132,16 +137,30 @@ const getPostById = async (id: string) => {
       where: {
         id: id,
       },
-      include : {
-        comments : {
-          where : {
-            parentId : null
+      include: {
+        comments: {
+          where: {
+            parentId: null,
+            status: CommentStatus.APPROVED,
           },
-          include : {
-            replies : true
-          }
-        }
-      }
+
+          orderBy: { createdAt: "asc" },
+          include: {
+            replies: {
+              where: {
+                status: CommentStatus.APPROVED,
+              },
+              orderBy: { createdAt: "asc" },
+              include: {
+                replies: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: { comments: true },
+        },
+      },
     });
     return postData;
   });

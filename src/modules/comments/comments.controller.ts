@@ -15,6 +15,34 @@ const createComment = async (req: Request, res: Response) => {
   }
 };
 
-export const commentsController = {
-    createComment
+const getCommentById = async (req: Response, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const result = await CommentService.getCommentsById(commentId as string);
+    res.status(201).json(result);
+  } catch (e: any) {
+    res.status(400).json({
+      error: "Comment creation failed",
+      details: e.message,
+    });
+  }
+};
+
+const getCommentByAuthorId = async (req : Request, res : Response) => {
+  try {
+    const {authorId} = req.params;
+    const result = await CommentService.getCommentByAuthorId(authorId as string);
+    res.status(201).json(result);
+  } catch (e: any) {
+    res.status(400).json({
+      error: "Comment creation failed",
+      details: e.message,
+    });
+  }
 }
+
+export const commentsController = {
+  createComment,
+  getCommentById,
+  getCommentByAuthorId
+};
