@@ -37,14 +37,14 @@ const getCommentsById = async (commentId: string) => {
           title: true,
         },
       },
-      replies : {
-        select : {
-          id : true,
-          content : true,
-          authorId : true,
-          createdAt : true,
-        }
-      }
+      replies: {
+        select: {
+          id: true,
+          content: true,
+          authorId: true,
+          createdAt: true,
+        },
+      },
     },
   });
 };
@@ -74,10 +74,10 @@ const deleteComment = async (commentId: string, authorId: string) => {
       id: commentId,
       authorId,
     },
-    select : {
+    select: {
       id: true,
       authorId: true,
-    }
+    },
   });
   if (!commentData) {
     return {
@@ -86,13 +86,12 @@ const deleteComment = async (commentId: string, authorId: string) => {
     };
   }
 
-   return await prisma.comment.delete({
+  return await prisma.comment.delete({
     where: {
       id: commentId,
       authorId,
     },
   });
-
 };
 
 export const CommentService = {
