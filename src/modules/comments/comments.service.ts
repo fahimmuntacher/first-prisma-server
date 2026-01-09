@@ -37,6 +37,14 @@ const getCommentsById = async (commentId: string) => {
           title: true,
         },
       },
+      replies : {
+        select : {
+          id : true,
+          content : true,
+          authorId : true,
+          createdAt : true,
+        }
+      }
     },
   });
 };
@@ -60,8 +68,36 @@ const getCommentByAuthorId = async (authorId: string) => {
   });
 };
 
+const deleteComment = async (commentId: string, authorId: string) => {
+  const commentData = await prisma.comment.findFirst({
+    where: {
+      id: commentId,
+      authorId,
+    },
+    select : {
+      id: true,
+      authorId: true,
+    }
+  });
+  if (!commentData) {
+    return {
+      message:
+        "No comment found or you are not authorized to delete this comment",
+    };
+  }
+
+   return await prisma.comment.delete({
+    where: {
+      id: commentId,
+      authorId,
+    },
+  });
+
+};
+
 export const CommentService = {
   createComment,
   getCommentsById,
   getCommentByAuthorId,
+  deleteComment,
 };
