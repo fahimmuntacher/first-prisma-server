@@ -71,7 +71,7 @@ const getCommentByAuthorId = async (authorId: string) => {
 
 const updateComment = async (
   commentId: string,
-  data: { content?: string; status?: CommentStatus},
+  data: { status?: CommentStatus},
   authorId: string
 ) => {
   const commentData = await prisma.comment.findFirst({
@@ -95,6 +95,42 @@ const updateComment = async (
     where : {
       id : commentId,
       authorId
+    },
+    data : data
+  })
+};
+
+const moderateComment = async (
+  commentId: string,
+  data: { status?: CommentStatus},
+) => {
+  const commentData = await prisma.comment.findFirst({
+    where: {
+      id: commentId,
+    },
+    select: {
+      id: true,
+      authorId: true,
+      status: true
+    },
+  });
+  if (!commentData) {
+    return {
+      message:
+        "No comment found or you are not authorized to delete this comment",
+    };
+  }
+
+  console.log(commentData);
+  if(commentData.status === data.status){
+    return {
+      message: `Comment is already in ${data.status} status`,
+    }
+  }
+
+  return await prisma.comment.update({
+    where : {
+      id : commentId,
     },
     data : data
   })
@@ -134,4 +170,5 @@ export const CommentService = {
   getCommentByAuthorId,
   deleteComment,
   updateComment,
+  moderateComment
 };

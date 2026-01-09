@@ -16,6 +16,11 @@ router.patch(
   authMiddleware(UserRole.USER, UserRole.ADMIN),
   commentsController.updateComment
 );
+router.patch(
+  "/moderate/:commentId",
+  authMiddleware(UserRole.ADMIN),
+  commentsController.moderateComment
+);
 
 router.post(
   "/",

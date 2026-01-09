@@ -28,10 +28,12 @@ const getCommentById = async (req: Response, res: Response) => {
   }
 };
 
-const getCommentByAuthorId = async (req : Request, res : Response) => {
+const getCommentByAuthorId = async (req: Request, res: Response) => {
   try {
-    const {authorId} = req.params;
-    const result = await CommentService.getCommentByAuthorId(authorId as string);
+    const { authorId } = req.params;
+    const result = await CommentService.getCommentByAuthorId(
+      authorId as string
+    );
     res.status(201).json(result);
   } catch (e: any) {
     res.status(400).json({
@@ -39,13 +41,16 @@ const getCommentByAuthorId = async (req : Request, res : Response) => {
       details: e.message,
     });
   }
-}
+};
 
-const deleteComment = async (req : Request, res : Response) => {
+const deleteComment = async (req: Request, res: Response) => {
   try {
     const user = req.user;
-    const {commentId} = req.params;
-    const result = await CommentService.deleteComment(commentId as string, user?.id as string);
+    const { commentId } = req.params;
+    const result = await CommentService.deleteComment(
+      commentId as string,
+      user?.id as string
+    );
     res.status(201).json(result);
   } catch (e: any) {
     res.status(400).json({
@@ -53,12 +58,17 @@ const deleteComment = async (req : Request, res : Response) => {
       details: e.message,
     });
   }
-}
-const updateComment = async (req : Request, res : Response) => {
+};
+
+const updateComment = async (req: Request, res: Response) => {
   try {
     const user = req.user;
-    const {commentId} = req.params;
-    const result = await CommentService.updateComment(commentId as string, req.body, user?.id as string);
+    const { commentId } = req.params;
+    const result = await CommentService.updateComment(
+      commentId as string,
+      req.body,
+      user?.id as string
+    );
     res.status(201).json(result);
   } catch (e: any) {
     res.status(400).json({
@@ -66,13 +76,29 @@ const updateComment = async (req : Request, res : Response) => {
       details: e.message,
     });
   }
-}
+};
 
+const moderateComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const result = await CommentService.moderateComment(
+      commentId as string,
+      req.body
+    );
+    res.status(201).json(result);
+  } catch (e: any) {
+    res.status(400).json({
+      error: "Comment delete failed",
+      details: e.message,
+    });
+  }
+};
 
 export const commentsController = {
   createComment,
   getCommentById,
   getCommentByAuthorId,
   deleteComment,
-  updateComment
+  updateComment,
+  moderateComment,
 };
